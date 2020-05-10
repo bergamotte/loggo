@@ -7,7 +7,6 @@ import (
     "./pkg/config"
     "./pkg/print"
     "./pkg/reader"
-    "./pkg/writer"
 )
 
 var wg sync.WaitGroup
@@ -23,16 +22,9 @@ func main() {
     fmt.Println("Outputs detected:")
     print.PrintFiles(c.Outputs["files"])
 
-    channel := make(chan string)
-
     wg.Add(len(c.Inputs["files"]))
     for _, file := range c.Inputs["files"] {
-      go reader.ReadFile(file, &channel, &wg)
-    }
-
-    wg.Add(len(c.Outputs["files"]))
-    for _, file := range c.Outputs["files"] {
-      go writer.WriteToFile(file, channel, &wg)
+      go reader.ReadFile(file, c.Outputs["files"], &wg)
     }
 
     wg.Wait()
