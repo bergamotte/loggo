@@ -5,3 +5,4 @@ input:
 output:
   files:
     - ./tmp/out.txt
+    - ./tmp/out2.txt

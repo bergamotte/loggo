@@ -23,7 +23,7 @@ func main() {
   var wg sync.WaitGroup
   wg.Add(len(c.Inputs["files"]))
 	for _, file := range c.Inputs["files"] {
-		go tailer.Init(file, &wg)
+		go tailer.Init(file, &wg, c.Outputs["files"])
 	}
 
   wg.Wait()

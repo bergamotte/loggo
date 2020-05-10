@@ -7,11 +7,13 @@ import (
   "writer"
 )
 
-func Init (file string, wg *sync.WaitGroup) {
+func Init (file string, wg *sync.WaitGroup, dest []string) {
   defer wg.Done()
   t, err := tail.TailFile(file, tail.Config{Follow: true})
   error.Check(err)
   for line := range t.Lines {
-    writer.WriteToFile("./tmp/out.txt", line.Text)
+    for _, file := range dest {
+      writer.WriteToFile(file, line.Text)
+    }
   }
 }
