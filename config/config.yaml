@@ -1,0 +1,8 @@
+input:
+  files:
+    - ./tmp/in.txt
+    - ./tmp/in2.txt
+output:
+  files:
+    - ./tmp/out.txt
+    - ./tmp/out2.txt
