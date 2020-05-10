@@ -1,31 +1,30 @@
 package main
 
 import (
-    "fmt"
-    "flag"
-    "sync"
-    "./pkg/config"
-    "./pkg/print"
-    "./pkg/reader"
+	"config"
+	"flag"
+	"fmt"
+	"print"
+	"tailer"
+  "sync"
 )
 
-var wg sync.WaitGroup
-
 func main() {
-    var c config.Conf
-    configPath := flag.String("config", "./config/config.yaml", "path to config yaml file")
-    flag.Parse()
-    c.GetConf(*configPath)
+	var c config.Conf
+	configPath := flag.String("config", "./config/config.yaml", "path to config yaml file")
+	flag.Parse()
+	c.GetConf(*configPath)
 
-    fmt.Println("Inputs detected:")
-    print.PrintFiles(c.Inputs["files"])
-    fmt.Println("Outputs detected:")
-    print.PrintFiles(c.Outputs["files"])
+	fmt.Println("Inputs detected:")
+	print.PrintFiles(c.Inputs["files"])
+	fmt.Println("Outputs detected:")
+	print.PrintFiles(c.Outputs["files"])
 
-    wg.Add(len(c.Inputs["files"]))
-    for _, file := range c.Inputs["files"] {
-      go reader.ReadFile(file, c.Outputs["files"], &wg)
-    }
+  var wg sync.WaitGroup
+  wg.Add(len(c.Inputs["files"]))
+	for _, file := range c.Inputs["files"] {
+		go tailer.Init(file, &wg)
+	}
 
-    wg.Wait()
+  wg.Wait()
 }
