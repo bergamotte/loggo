@@ -24,7 +24,6 @@ func ReadFile(path string, dest []string, wg *sync.WaitGroup) {
 	fileScanner.Split(bufio.ScanLines)
 
 	for fileScanner.Scan() {
-    time.Sleep(30 * time.Second)
     for _, file := range dest {
       f, err := os.OpenFile(file, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
       check(err)
