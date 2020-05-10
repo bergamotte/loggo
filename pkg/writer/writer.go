@@ -11,15 +11,13 @@ func check(e error) {
     }
 }
 
-var mu sync.Mutex
-
 func WriteToFile(path string, channel <-chan string, wg *sync.WaitGroup) {
   defer wg.Done()
   f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
   check(err)
   defer f.Close()
 
-  for {
+  for a := 0; a < 6; a++{
 		m, more := <-channel
 		f.WriteString(m+"\n")
 		if more == false {
