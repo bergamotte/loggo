@@ -1,7 +1,6 @@
 package reader
 
 import (
-  "fmt"
   "bufio"
   "log"
   "os"
@@ -20,7 +19,7 @@ func ReadFile(path string, channel *chan string, wg *sync.WaitGroup) {
 	fileScanner.Split(bufio.ScanLines)
 
 	for fileScanner.Scan() {
-    *channel <- fmt.Sprintf(fileScanner.Text())
+    *channel <- path + ": " + fileScanner.Text()
 	}
 
 	readFile.Close()
