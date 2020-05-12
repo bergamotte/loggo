@@ -6,10 +6,6 @@ import (
   "strconv"
 )
 
-type Conf struct {
-  path string
-}
-
 func CreatePidFile (path string) {
   f, err := os.Create(path)
   error.Check(err)
