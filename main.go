@@ -2,6 +2,7 @@ package main
 
 import (
 	"config"
+	"exit"
 	"flag"
 	"fmt"
 	"print"
@@ -10,20 +11,24 @@ import (
 )
 
 func main() {
-	var c config.Conf
 	configPath := flag.String("config", "./config/config.yaml", "path to config yaml file")
+	pidPath := flag.String("pid", "./tmp/loggo.pid", "path to pid file")
 	flag.Parse()
-	c.GetConf(*configPath)
+
+	exit.SetupExitListener(*pidPath)
+
+	var config config.Conf
+	config.GetConf(*configPath)
 
 	fmt.Println("Inputs detected:")
-	print.PrintFiles(c.Inputs["files"])
+	print.PrintFiles(config.Inputs["files"])
 	fmt.Println("Outputs detected:")
-	print.PrintFiles(c.Outputs["files"])
+	print.PrintFiles(config.Outputs["files"])
 
   var wg sync.WaitGroup
-  wg.Add(len(c.Inputs["files"]))
-	for _, file := range c.Inputs["files"] {
-		go tailer.Init(file, &wg, c.Outputs["files"])
+  wg.Add(len(config.Inputs["files"]))
+	for _, file := range config.Inputs["files"] {
+		go tailer.Init(file, &wg, config.Outputs["files"])
 	}
 
   wg.Wait()

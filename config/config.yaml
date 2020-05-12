@@ -1,7 +1,7 @@
 input:
   files:
-    - ./tmp/in.txt
-    - ./tmp/in2.txt
+    - /Users/tarrynn/Desktop/bergamotte-app/log/development.log
+    - /Users/tarrynn/Desktop/bergamotte-app/log/test.log
 output:
   files:
     - ./tmp/out.txt
