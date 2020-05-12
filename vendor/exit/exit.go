@@ -15,7 +15,7 @@ func SetupExitListener(pidPath string) {
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		<-c
-		fmt.Println("\r- Terminating...")
+		fmt.Println("\rTerminating...")
     pid.RemovePidFile(pidPath)
 		os.Exit(0)
 	}()
