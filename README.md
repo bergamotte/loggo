@@ -1,13 +1,13 @@
-### Install deps
+### Download and Install deps locally
 
     go get -u -v -f all
     go mod vendor
 
-### Available flags
+### Available flags for running the project
 
     go run main.go -h
 
-### Run
+### Run the project
 
     go run main.go
 
@@ -15,6 +15,6 @@
 
     go test ./...
 
-### Build
+### Build the binary
 
     go build .
