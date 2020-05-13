@@ -16,6 +16,7 @@ func main() {
 	configPath := flag.String("config", "./config/config.yaml", "path to config yaml file")
 	pidPath := flag.String("pid", "./tmp/loggo.pid", "path to pid file")
 	dmon := flag.Bool("daemon", false, "run as daemon false|true")
+	full := flag.Bool("full", false, "start straight at the end or full index of the input false|true")
 	flag.Parse()
 
 	if *dmon {
@@ -34,7 +35,7 @@ func main() {
 	  var wg sync.WaitGroup
 	  wg.Add(len(config.Inputs["files"]))
 		for _, file := range config.Inputs["files"] {
-			go tailer.Init(file, &wg, config.Outputs["files"])
+			go tailer.Init(file, &wg, config.Outputs["files"], *full)
 		}
 
 	  wg.Wait()
