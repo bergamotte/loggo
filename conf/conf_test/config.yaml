@@ -1,0 +1,8 @@
+input:
+  files:
+    - test1.txt
+    - test2.txt
+output:
+  files:
+    - out1.txt
+    - out2.txt
