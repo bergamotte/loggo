@@ -5,6 +5,7 @@ import (
   "github.com/elastic/go-elasticsearch/v7"
   "github.com/tarrynn/loggo/error"
   "os"
+  "regexp"
   "sync"
   "strings"
 )
@@ -44,11 +45,14 @@ func WriteToElastic(path string, msg string) {
   }
   es, _ := elasticsearch.NewClient(cfg)
 
+  re := regexp.MustCompile("[[:^ascii:]]")
+  t := re.ReplaceAllLiteralString(msg, "")
+
   res, err := es.Index(
 		"logs",
 		strings.NewReader(`{
 		  "user": "tarrynn",
-		  "message": "`+ msg +`"
+		  "message": "`+ t +`"
 		}`),
 		es.Index.WithPretty(),
 	)
