@@ -1,7 +1,7 @@
 package pid
 
 import (
-  "error"
+  "github.com/tarrynn/loggo/error"
   "os"
   "strconv"
 )

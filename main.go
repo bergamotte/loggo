@@ -1,15 +1,15 @@
 package main
 
 import (
-	"config"
-	"daemon"
-	"exit"
+	"github.com/tarrynn/loggo/conf"
+	"github.com/tarrynn/loggo/daemon"
+	"github.com/tarrynn/loggo/exit"
+	"github.com/tarrynn/loggo/print"
+	"github.com/tarrynn/loggo/tailer"
 	"flag"
 	"fmt"
 	"os"
-	"print"
   "sync"
-	"tailer"
 )
 
 func main() {
@@ -24,7 +24,7 @@ func main() {
 	} else {
 		exit.SetupExitListener(*pidPath)
 
-		var config config.Conf
+		var config conf.Conf
 		config.GetConf(*configPath)
 
 		fmt.Println("Inputs detected:")

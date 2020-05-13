@@ -1,11 +1,11 @@
 package tailer
 
 import (
-  "error"
   "github.com/hpcloud/tail"
+  "github.com/tarrynn/loggo/error"
+  "github.com/tarrynn/loggo/writer"
   "io"
   "sync"
-  "writer"
 )
 
 func position (full bool) int {

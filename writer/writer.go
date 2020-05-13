@@ -1,7 +1,7 @@
 package writer
 
 import (
-  "error"
+  "github.com/tarrynn/loggo/error"
   "os"
   "sync"
 )

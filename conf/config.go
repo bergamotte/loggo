@@ -1,9 +1,9 @@
-package config
+package conf
 
 import (
+  "github.com/tarrynn/loggo/error"
   "gopkg.in/yaml.v2"
   "io/ioutil"
-  "error"
 )
 
 type Conf struct {

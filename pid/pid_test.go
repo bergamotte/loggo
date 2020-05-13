@@ -2,7 +2,7 @@ package pid_test
 
 import (
   "os"
-  "pid"
+  "github.com/tarrynn/loggo/pid"
   "testing"
 )
 

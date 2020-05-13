@@ -4,7 +4,7 @@ import (
   "fmt"
   "os"
 	"os/signal"
-  "pid"
+  "github.com/tarrynn/loggo/pid"
 	"syscall"
 )
 
