@@ -6,3 +6,5 @@ output:
   files:
     - ./tmp/out.txt
     - ./tmp/out2.txt
+  elasticsearch:
+    - http://docker:9200
