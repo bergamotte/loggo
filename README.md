@@ -11,6 +11,10 @@
 
     go run main.go
 
+### Test
+
+    go test ./...
+
 ### Build
 
-    go build
+    go build .
