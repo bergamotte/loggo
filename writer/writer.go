@@ -22,7 +22,7 @@ func WriteToFile(filename string, hostname string, log string, msg string) {
   defer f.Close()
 
   logname := strings.Split(log, "/")
-  f.WriteString("[" + hostname + "] " + logname[len(logname)-1] + ": " + msg + "\n")
+  f.WriteString("[" + time.Now().Format("2006-01-02 15:04:05") + "] [" + hostname + "] " + logname[len(logname)-1] + ": " + msg + "\n")
 }
 
 func CreateIndex(path string) {
@@ -32,7 +32,7 @@ func CreateIndex(path string) {
     },
   }
   es, _ := elasticsearch.NewClient(cfg)
-  res, err := es.Indices.Create(
+  _, err := es.Indices.Create(
 		"logs",
 		es.Indices.Create.WithBody(strings.NewReader(`{
 		  "settings": {
