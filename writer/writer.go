@@ -48,7 +48,7 @@ func CreateIndex(path string) {
 		  }
 		}`)),
 	)
-	fmt.Println(res, err)
+	//fmt.Println(res, err)
 	if err != nil {
 		fmt.Println(err)
 	}
