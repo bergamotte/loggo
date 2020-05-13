@@ -5,6 +5,7 @@ import (
   "github.com/tarrynn/loggo/error"
   "github.com/tarrynn/loggo/writer"
   "io"
+  "os"
   "sync"
 )
 
@@ -19,21 +20,24 @@ func position (full bool) int {
 func Init (file string, wg *sync.WaitGroup, dest map[string][]string, full bool) {
   defer wg.Done()
 
-  seekInfo := &tail.SeekInfo{ Offset: 0, Whence: position(full) }
+  hostname, err := os.Hostname()
+  error.Check(err)
 
+  seekInfo := &tail.SeekInfo{ Offset: 0, Whence: position(full) }
   t, err := tail.TailFile(file, tail.Config{Follow: true, Location: seekInfo})
   error.Check(err)
+  
   for line := range t.Lines {
     for key, values := range dest {
       if key == "files" {
-        for _, file := range values {
-          writer.WriteToFile(file, line.Text)
+        for _, out := range values {
+          writer.WriteToFile(out, hostname, file, line.Text)
         }
       }
 
       if key == "elasticsearch" {
         for _, path := range values {
-          writer.WriteToElastic(path, line.Text)
+          writer.WriteToElastic(path, hostname, file, line.Text)
         }
       }
     }

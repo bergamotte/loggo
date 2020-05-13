@@ -1,18 +1,19 @@
 package writer
 
 import (
+  "encoding/json"
   "fmt"
   "github.com/elastic/go-elasticsearch/v7"
   "github.com/tarrynn/loggo/error"
   "os"
-  "regexp"
   "sync"
   "strings"
+  "time"
 )
 
 var mu sync.Mutex
 
-func WriteToFile(filename string, msg string) {
+func WriteToFile(filename string, hostname string, log string, msg string) {
   mu.Lock()
   defer mu.Unlock()
 
@@ -20,7 +21,8 @@ func WriteToFile(filename string, msg string) {
   error.Check(err)
   defer f.Close()
 
-  f.WriteString(msg + "\n")
+  logname := strings.Split(log, "/")
+  f.WriteString("[" + hostname + "] " + logname[len(logname)-1] + ": " + msg + "\n")
 }
 
 func CreateIndex(path string) {
@@ -30,14 +32,38 @@ func CreateIndex(path string) {
     },
   }
   es, _ := elasticsearch.NewClient(cfg)
-	res, err := es.Indices.Create("logs")
+  res, err := es.Indices.Create(
+		"logs",
+		es.Indices.Create.WithBody(strings.NewReader(`{
+		  "settings": {
+		    "number_of_shards": 1
+		  },
+		  "mappings": {
+		    "properties": {
+		      "log": { "type": "text" },
+          "message": { "type": "text" },
+          "hostname": { "type": "text" },
+          "timestamp": { "type": "date", "format": "yyyy-MM-dd HH:mm:ss" }
+		    }
+		  }
+		}`)),
+	)
 	fmt.Println(res, err)
 	if err != nil {
 		fmt.Println(err)
 	}
 }
 
-func WriteToElastic(path string, msg string) {
+func jsonEscape(i string) string {
+	b, err := json.Marshal(i)
+	if err != nil {
+		panic(err)
+	}
+	s := string(b)
+	return s[1:len(s)-1]
+}
+
+func WriteToElastic(path string, hostname string, log string, msg string) {
   cfg := elasticsearch.Config{
     Addresses: []string{
       path,
@@ -45,14 +71,15 @@ func WriteToElastic(path string, msg string) {
   }
   es, _ := elasticsearch.NewClient(cfg)
 
-  re := regexp.MustCompile("[[:^ascii:]]")
-  t := re.ReplaceAllLiteralString(msg, "")
+  logname := strings.Split(log, "/")
 
   res, err := es.Index(
 		"logs",
 		strings.NewReader(`{
-		  "user": "tarrynn",
-		  "message": "`+ t +`"
+		  "log": "`+ logname[len(logname)-1] +`",
+      "hostname": "`+ hostname +`",
+      "timestamp": "`+ time.Now().Format("2006-01-02 15:04:05") +`",
+		  "message": "`+ jsonEscape(msg) +`"
 		}`),
 		es.Index.WithPretty(),
 	)
@@ -61,6 +88,6 @@ func WriteToElastic(path string, msg string) {
 		fmt.Println("Error getting response: %s", err)
 	}
 
-  fmt.Println(res)
+  //fmt.Println(res, " - message was: ", msg)
 	defer res.Body.Close()
 }
