@@ -85,7 +85,7 @@ func WriteToElastic(path string, hostname string, log string, msg string) {
 	)
 
 	if err != nil {
-		fmt.Println("Error getting response: %s", err)
+		fmt.Println("Error getting response: ", err)
 	}
 
   //fmt.Println(res, " - message was: ", msg)
