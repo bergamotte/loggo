@@ -5,6 +5,7 @@ import (
   "github.com/tarrynn/loggo/error"
   "github.com/tarrynn/loggo/writer"
   "io"
+  "os"
   "sync"
 )
 
@@ -16,16 +17,17 @@ func position (full bool) int {
   }
 }
 
-func Init (file string, wg *sync.WaitGroup, dest []string, full bool) {
+func Init (file string, wg *sync.WaitGroup, dest map[string][]string, full bool) {
   defer wg.Done()
 
-  seekInfo := &tail.SeekInfo{ Offset: 0, Whence: position(full) }
+  hostname, err := os.Hostname()
+  error.Check(err)
 
+  seekInfo := &tail.SeekInfo{ Offset: 0, Whence: position(full) }
   t, err := tail.TailFile(file, tail.Config{Follow: true, Location: seekInfo})
   error.Check(err)
+
   for line := range t.Lines {
-    for _, file := range dest {
-      writer.WriteToFile(file, line.Text)
-    }
+    writer.Write(dest, hostname, file, line.Text)
   }
 }

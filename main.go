@@ -4,8 +4,8 @@ import (
 	"github.com/tarrynn/loggo/conf"
 	"github.com/tarrynn/loggo/daemon"
 	"github.com/tarrynn/loggo/exit"
-	"github.com/tarrynn/loggo/print"
 	"github.com/tarrynn/loggo/tailer"
+	"github.com/tarrynn/loggo/writer"
 	"flag"
 	"fmt"
 	"os"
@@ -28,14 +28,25 @@ func main() {
 		config.GetConf(*configPath)
 
 		fmt.Println("Inputs detected:")
-		print.PrintFiles(config.Inputs["files"])
+		for key, value := range config.Inputs {
+				for _, path := range value {
+					fmt.Println(key, " ->", path)
+				}
+		}
 		fmt.Println("Outputs detected:")
-		print.PrintFiles(config.Outputs["files"])
+		for key, value := range config.Outputs {
+				for _, path := range value {
+					fmt.Println(key, " ->", path)
+					if key == "elasticsearch" {
+						 writer.CreateIndex(path)
+					}
+				}
+		}
 
 	  var wg sync.WaitGroup
 	  wg.Add(len(config.Inputs["files"]))
 		for _, file := range config.Inputs["files"] {
-			go tailer.Init(file, &wg, config.Outputs["files"], *full)
+			go tailer.Init(file, &wg, config.Outputs, *full)
 		}
 
 	  wg.Wait()

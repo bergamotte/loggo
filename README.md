@@ -1,6 +1,6 @@
 ### Download and Install deps locally
 
-    go get -u -v -f all
+    go get -v -t -d ./...
     go mod vendor
 
 ### Available flags for running the project

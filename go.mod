@@ -3,6 +3,7 @@ module github.com/tarrynn/loggo
 go 1.14
 
 require (
+	github.com/elastic/go-elasticsearch/v7 v7.6.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/hpcloud/tail v1.0.0
 	github.com/kr/text v0.2.0 // indirect
