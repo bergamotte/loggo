@@ -46,6 +46,12 @@ func CreateIndex(path string) {
 }
 
 func WriteToElastic(path string, hostname string, log string, msg string) {
+  defer func() {
+    if r := recover(); r != nil {
+        fmt.Println("Recovered from ", r)
+    }
+  }()
+
   cfg := elasticsearch.Config{
     Addresses: []string{
       path,
