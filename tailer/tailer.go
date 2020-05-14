@@ -26,21 +26,8 @@ func Init (file string, wg *sync.WaitGroup, dest map[string][]string, full bool)
   seekInfo := &tail.SeekInfo{ Offset: 0, Whence: position(full) }
   t, err := tail.TailFile(file, tail.Config{Follow: true, Location: seekInfo})
   error.Check(err)
-  
+
   for line := range t.Lines {
-    for key, values := range dest {
-      if key == "files" {
-        for _, out := range values {
-          writer.WriteToFile(out, hostname, file, line.Text)
-        }
-      }
-
-      if key == "elasticsearch" {
-        for _, path := range values {
-          writer.WriteToElastic(path, hostname, file, line.Text)
-        }
-      }
-    }
-
+    writer.Write(dest, hostname, file, line.Text)
   }
 }
