@@ -1,5 +1,17 @@
 package writer
 
+import (
+  "encoding/json"
+  "github.com/tarrynn/loggo/error"
+)
+
+func jsonEscape(i string) string {
+	b, err := json.Marshal(i)
+	error.Check(err)
+	s := string(b)
+	return s[1:len(s)-1]
+}
+
 func Write(dest map[string][]string, hostname string, source string, line string) {
   for key, values := range dest {
     if key == "files" {
@@ -11,6 +23,12 @@ func Write(dest map[string][]string, hostname string, source string, line string
     if key == "elasticsearch" {
       for _, path := range values {
         WriteToElastic(path, hostname, source, line)
+      }
+    }
+
+    if key == "redis" {
+      for _, path := range values {
+        WriteToRedis(path, hostname, source, line)
       }
     }
   }

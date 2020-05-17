@@ -5,6 +5,7 @@ go 1.14
 require (
 	github.com/elastic/go-elasticsearch/v7 v7.6.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
+	github.com/go-redis/redis/v7 v7.2.0
 	github.com/hpcloud/tail v1.0.0
 	github.com/kr/text v0.2.0 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect

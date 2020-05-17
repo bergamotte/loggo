@@ -1,20 +1,11 @@
 package writer
 
 import (
-  "encoding/json"
   "fmt"
   "github.com/elastic/go-elasticsearch/v7"
-  "github.com/tarrynn/loggo/error"
   "strings"
   "time"
 )
-
-func jsonEscape(i string) string {
-	b, err := json.Marshal(i)
-	error.Check(err)
-	s := string(b)
-	return s[1:len(s)-1]
-}
 
 func CreateIndex(path string) {
   cfg := elasticsearch.Config{

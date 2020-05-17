@@ -7,3 +7,5 @@ output:
     - ./tmp/out.txt
   elasticsearch:
     - http://docker:9200
+  redis:
+    - docker:6379
