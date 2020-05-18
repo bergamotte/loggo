@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) [2020] [tarrnn]
+Copyright (c) [2020] [github.com/tarrynn]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
