@@ -7,18 +7,26 @@ import (
   "time"
 )
 
+var client redis.Client
+
+func init() {
+  client = redisConn()
+}
+
+func redisConn() redis.Client {
+  return *redis.NewClient(&redis.Options{
+		Addr:     "docker:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+}
+
 func WriteToRedis(path string, hostname string, log string, msg string) {
   defer func() {
     if r := recover(); r != nil {
         fmt.Println("Recovered from ", r)
     }
   }()
-
-  client := redis.NewClient(&redis.Options{
-		Addr:     path,
-		Password: "", // no password set
-		DB:       0,  // use default DB
-	})
 
   logname := strings.Split(log, "/")
 

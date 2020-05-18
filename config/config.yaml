@@ -1,11 +1,11 @@
 input:
   files:
-    - /Users/tarrynn/Desktop/bergamotte-app/log/development.log
+    #- /Users/tarrynn/Desktop/bergamotte-app/log/development.log
     - /Users/tarrynn/Desktop/bergamotte-app/log/test.log
 output:
-  files:
-    - ./tmp/out.txt
-  elasticsearch:
-    - http://docker:9200
+  #files:
+    #- ./tmp/out.txt
+  #elasticsearch:
+    #- http://docker:9200
   redis:
-    - docker:6379
+    - 192.168.64.19:6379

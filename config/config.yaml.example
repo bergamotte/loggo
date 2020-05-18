@@ -1,0 +1,11 @@
+input:
+  files:
+    - /path/to/log.log
+    - /path/to/another.log
+output:
+  files:
+    - /path/to/aggregate.log
+  elasticsearch:
+    - http://localhost:9200
+  redis:
+    - localhost:6379
