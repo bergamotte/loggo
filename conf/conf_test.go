@@ -25,6 +25,12 @@ func TestGetConf(t *testing.T) {
       Expected: "no panic",
       File: "conf_test/config.yaml",
     },
+    {
+      Id: 3,
+      Name: "check if maxConcurrentMessages is set properly",
+      Expected: "no panic",
+      File: "conf_test/config2.yaml",
+    },
   }
 
   for _, tc := range testCases {
@@ -50,6 +56,18 @@ func TestGetConf(t *testing.T) {
           if len(config.Inputs["files"]) != 2 || len(config.Outputs["files"]) != 2 {
             t.Errorf("Config file wasn't read properly")
           }
+        }
+
+        if tc.Id == 3 {
+          if val, ok := config.Config["maxConcurrentMessages"]; ok {
+            if val != 100 {
+              t.Errorf("maxConcurrentMessages value wasn't set properly")
+            }
+      		} else {
+            t.Errorf("Config file wasn't read properly")
+          }
+
+
         }
     })
   }

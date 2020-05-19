@@ -1,7 +1,6 @@
 package writer
 
 import (
-  "encoding/json"
   "fmt"
   "github.com/elastic/go-elasticsearch/v7"
   "github.com/tarrynn/loggo/error"
@@ -9,20 +8,29 @@ import (
   "time"
 )
 
-func jsonEscape(i string) string {
-	b, err := json.Marshal(i)
-	error.Check(err)
-	s := string(b)
-	return s[1:len(s)-1]
+func NewElasticConn(path []string) elasticsearch.Client {
+  defer func() {
+    if r := recover(); r != nil {
+        fmt.Println("Recovered from ", r)
+    }
+  }()
+
+  elastic, err := elasticsearch.NewClient(elasticsearch.Config{
+    Addresses: path,
+  })
+
+  error.Check(err)
+
+  return *elastic
 }
 
-func CreateIndex(path string) {
-  cfg := elasticsearch.Config{
-    Addresses: []string{
-      path,
-    },
-  }
-  es, _ := elasticsearch.NewClient(cfg)
+func CreateIndex(es elasticsearch.Client) {
+  defer func() {
+    if r := recover(); r != nil {
+        fmt.Println("Recovered from ", r)
+    }
+  }()
+
   _, err := es.Indices.Create(
 		"logs",
 		es.Indices.Create.WithBody(strings.NewReader(`{
@@ -39,25 +47,18 @@ func CreateIndex(path string) {
 		  }
 		}`)),
 	)
-	//fmt.Println(res, err)
+
 	if err != nil {
 		fmt.Println(err)
 	}
 }
 
-func WriteToElastic(path string, hostname string, log string, msg string) {
+func WriteToElastic(es elasticsearch.Client, hostname string, log string, msg string) {
   defer func() {
     if r := recover(); r != nil {
         fmt.Println("Recovered from ", r)
     }
   }()
-
-  cfg := elasticsearch.Config{
-    Addresses: []string{
-      path,
-    },
-  }
-  es, _ := elasticsearch.NewClient(cfg)
 
   logname := strings.Split(log, "/")
 
@@ -76,6 +77,5 @@ func WriteToElastic(path string, hostname string, log string, msg string) {
 		fmt.Println("Error getting response: ", err)
 	}
 
-  //fmt.Println(res, " - message was: ", msg)
 	defer res.Body.Close()
 }

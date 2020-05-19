@@ -1,16 +1,33 @@
 package writer
 
-func Write(dest map[string][]string, hostname string, source string, line string) {
-  for key, values := range dest {
-    if key == "files" {
-      for _, out := range values {
-        WriteToFile(out, hostname, source, line)
-      }
-    }
+import (
+  "encoding/json"
+  "github.com/tarrynn/loggo/error"
+)
 
-    if key == "elasticsearch" {
-      for _, path := range values {
-        WriteToElastic(path, hostname, source, line)
+func jsonEscape(i string) string {
+	b, err := json.Marshal(i)
+	error.Check(err)
+	s := string(b)
+	return s[1:len(s)-1]
+}
+
+func Write(dest map[string][]string, hostname string, source string, channel <-chan string) {
+  for line := range channel {
+    for key, values := range dest {
+      if key == "files" {
+        for _, out := range values {
+          WriteToFile(out, hostname, source, line)
+        }
+      }
+
+      if key == "elasticsearch" {
+        elastic := NewElasticConn(values)
+        WriteToElastic(elastic, hostname, source, line)
+      }
+
+      if key == "redis" {
+        WriteToRedis(hostname, source, line)
       }
     }
   }

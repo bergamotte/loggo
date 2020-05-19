@@ -9,6 +9,7 @@ import (
 type Conf struct {
   Inputs map[string][]string `yaml:"input"`
   Outputs map[string][]string `yaml:"output"`
+  Config map[string]int `yaml:config`
 }
 
 func (c *Conf) GetConf(path string) *Conf {

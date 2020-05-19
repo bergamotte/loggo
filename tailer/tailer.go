@@ -17,8 +17,10 @@ func position (full bool) int {
   }
 }
 
-func Init (file string, wg *sync.WaitGroup, dest map[string][]string, full bool) {
+func Init (maxMessages int, file string, wg *sync.WaitGroup, dest map[string][]string, full bool) {
   defer wg.Done()
+
+  channel := make(chan string, maxMessages)
 
   hostname, err := os.Hostname()
   error.Check(err)
@@ -27,7 +29,16 @@ func Init (file string, wg *sync.WaitGroup, dest map[string][]string, full bool)
   t, err := tail.TailFile(file, tail.Config{Follow: true, Location: seekInfo})
   error.Check(err)
 
+  go writer.Write(dest, hostname, file, channel)
+
   for line := range t.Lines {
-    writer.Write(dest, hostname, file, line.Text)
+    for {
+      if len(channel) != cap(channel) {
+        channel <- line.Text
+        break
+      }
+    }
   }
+
+  close(channel)
 }
