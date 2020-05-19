@@ -59,9 +59,15 @@ func TestGetConf(t *testing.T) {
         }
 
         if tc.Id == 3 {
-          if config.Config["maxConcurrentMessages"] != 100 {
+          if val, ok := config.Config["maxConcurrentMessages"]; ok {
+            if val != 100 {
+              t.Errorf("maxConcurrentMessages value wasn't set properly")
+            }
+      		} else {
             t.Errorf("Config file wasn't read properly")
           }
+
+
         }
     })
   }
