@@ -45,10 +45,15 @@ func main() {
 	}
 
 	if len(config.Outputs) != 0 && len(config.Inputs) != 0  {
+		var maxConcurrentMessages = 0
+		if val, ok := config.Config["maxConcurrentMessages"]; ok {
+		  maxConcurrentMessages = val
+		}
+
 		var wg sync.WaitGroup
 	  wg.Add(len(config.Inputs["files"]))
 		for _, file := range config.Inputs["files"] {
-			go tailer.Init(file, &wg, config.Outputs, *full)
+			go tailer.Init(maxConcurrentMessages, file, &wg, config.Outputs, *full)
 		}
 
 	  wg.Wait()

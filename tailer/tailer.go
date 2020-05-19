@@ -17,10 +17,10 @@ func position (full bool) int {
   }
 }
 
-func Init (file string, wg *sync.WaitGroup, dest map[string][]string, full bool) {
+func Init (maxMessages int, file string, wg *sync.WaitGroup, dest map[string][]string, full bool) {
   defer wg.Done()
 
-  channel := make(chan string, 200)
+  channel := make(chan string, maxMessages)
 
   hostname, err := os.Hostname()
   error.Check(err)

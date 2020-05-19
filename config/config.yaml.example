@@ -1,3 +1,5 @@
+config:
+  maxConcurrentMessages: 200
 input:
   # if empty, process will exit
   files:
