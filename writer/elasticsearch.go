@@ -2,7 +2,7 @@ package writer
 
 import (
   "fmt"
-  "github.com/elastic/go-elasticsearch/v7"
+  "github.com/elastic/go-elasticsearch/v6"
   "github.com/tarrynn/loggo/error"
   "strings"
   "time"
@@ -38,12 +38,14 @@ func CreateIndex(es elasticsearch.Client) {
 		    "number_of_shards": 1
 		  },
 		  "mappings": {
-		    "properties": {
-		      "log": { "type": "text" },
-          "message": { "type": "text" },
-          "hostname": { "type": "text" },
-          "timestamp": { "type": "date", "format": "yyyy-MM-dd HH:mm:ss" }
-		    }
+        "_doc": {
+          "properties": {
+  		      "log": { "type": "text" },
+            "message": { "type": "text" },
+            "hostname": { "type": "text" },
+            "timestamp": { "type": "date", "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis" }
+  		    }
+        }
 		  }
 		}`)),
 	)
