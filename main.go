@@ -29,12 +29,14 @@ func main() {
 	}
 	fmt.Println("Outputs detected:")
 	for key, value := range config.Outputs {
-			for _, path := range value {
-				fmt.Println(key, " ->", path)
-				if key == "elasticsearch" {
-					 writer.CreateIndex(path)
-				}
-			}
+		if key == "elasticsearch" {
+			elastic := writer.NewElasticConn(value)
+			writer.CreateIndex(elastic)
+		}
+
+		for _, path := range value {
+			fmt.Println(key, " ->", path)
+		}
 	}
 
   var wg sync.WaitGroup

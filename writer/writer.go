@@ -22,9 +22,8 @@ func Write(dest map[string][]string, hostname string, source string, channel <-c
       }
 
       if key == "elasticsearch" {
-        for _, path := range values {
-          WriteToElastic(path, hostname, source, line)
-        }
+        elastic := NewElasticConn(values)
+        WriteToElastic(elastic, hostname, source, line)
       }
 
       if key == "redis" {
