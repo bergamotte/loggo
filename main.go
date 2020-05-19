@@ -7,6 +7,7 @@ import (
 	"github.com/tarrynn/loggo/writer"
 	"flag"
 	"fmt"
+	"os"
   "sync"
 )
 
@@ -29,21 +30,30 @@ func main() {
 	}
 	fmt.Println("Outputs detected:")
 	for key, value := range config.Outputs {
+		for _, path := range value {
+			fmt.Println(key, " ->", path)
+		}
+
 		if key == "elasticsearch" {
 			elastic := writer.NewElasticConn(value)
 			writer.CreateIndex(elastic)
 		}
 
-		for _, path := range value {
-			fmt.Println(key, " ->", path)
+		if key == "redis" {
+			writer.NewRedisConn(value[0])
 		}
 	}
 
-  var wg sync.WaitGroup
-  wg.Add(len(config.Inputs["files"]))
-	for _, file := range config.Inputs["files"] {
-		go tailer.Init(file, &wg, config.Outputs, *full)
-	}
+	if len(config.Outputs) != 0 && len(config.Inputs) != 0  {
+		var wg sync.WaitGroup
+	  wg.Add(len(config.Inputs["files"]))
+		for _, file := range config.Inputs["files"] {
+			go tailer.Init(file, &wg, config.Outputs, *full)
+		}
 
-  wg.Wait()
+	  wg.Wait()
+	} else {
+		fmt.Println("No inputs/outputs detected, terminating.")
+		os.Exit(0)
+	}
 }

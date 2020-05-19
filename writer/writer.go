@@ -27,9 +27,7 @@ func Write(dest map[string][]string, hostname string, source string, channel <-c
       }
 
       if key == "redis" {
-        for _, path := range values {
-          WriteToRedis(path, hostname, source, line)
-        }
+        WriteToRedis(hostname, source, line)
       }
     }
   }

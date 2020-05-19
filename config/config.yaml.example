@@ -1,11 +1,16 @@
 input:
+  # if empty, process will exit
   files:
     - /path/to/log.log
     - /path/to/another.log
 output:
+  # if empty, process will exit
   files:
+    # you can put multiple values here
     - /path/to/aggregate.log
   elasticsearch:
+    # you can put multiple values here
     - http://localhost:9200
   redis:
+    # only the first value here will be used
     - localhost:6379

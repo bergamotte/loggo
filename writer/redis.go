@@ -9,19 +9,25 @@ import (
 
 var client redis.Client
 
-func init() {
-  client = redisConn()
-}
+func NewRedisConn(path string) {
+  defer func() {
+    if r := recover(); r != nil {
+        fmt.Println("No redis server alive", r)
+    }
+  }()
 
-func redisConn() redis.Client {
-  return *redis.NewClient(&redis.Options{
-		Addr:     "docker:6379",
+  if path == "" {
+    path = "localhost:6379"
+  }
+
+  client = *redis.NewClient(&redis.Options{
+		Addr:    path,
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
 }
 
-func WriteToRedis(path string, hostname string, log string, msg string) {
+func WriteToRedis(hostname string, log string, msg string) {
   defer func() {
     if r := recover(); r != nil {
         fmt.Println("Recovered from ", r)
