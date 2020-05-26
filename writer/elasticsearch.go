@@ -43,7 +43,7 @@ func CreateIndex(es elasticsearch.Client) {
   		      "log": { "type": "text" },
             "message": { "type": "text" },
             "hostname": { "type": "text" },
-            "timestamp": { "type": "date", "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis" }
+            "timestamp": { "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSS" }
   		    }
         }
 		  }
@@ -53,6 +53,34 @@ func CreateIndex(es elasticsearch.Client) {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func DeleteOldEntries(es elasticsearch.Client) {
+  defer func() {
+    if r := recover(); r != nil {
+        fmt.Println("Recovered from ", r)
+    }
+  }()
+
+  res, err := es.DeleteByQuery(
+		[]string{"logs"},
+		strings.NewReader(`{
+		  "query": {
+		    "range": {
+		      "timestamp": {
+		        "lt": "now-5d",
+            "format": "yyyy-MM-dd HH:mm:ss.SSS"
+		      }
+		    }
+		  }
+		}`),
+	)
+
+  if err != nil {
+		fmt.Println(err)
+	}
+
+  defer res.Body.Close()
 }
 
 func WriteToElastic(es elasticsearch.Client, hostname string, log string, msg string) {
@@ -69,7 +97,7 @@ func WriteToElastic(es elasticsearch.Client, hostname string, log string, msg st
 		strings.NewReader(`{
 		  "log": "`+ logname[len(logname)-1] +`",
       "hostname": "`+ hostname +`",
-      "timestamp": "`+ time.Now().Format("2006-01-02 15:04:05") +`",
+      "timestamp": "`+ time.Now().Format("2006-01-02 15:04:05.000") +`",
 		  "message": "`+ jsonEscape(msg) +`"
 		}`),
 		es.Index.WithPretty(),
