@@ -37,6 +37,7 @@ func main() {
 		if key == "elasticsearch" {
 			elastic := writer.NewElasticConn(value)
 			writer.CreateIndex(elastic)
+			writer.DeleteOldEntries(elastic)
 		}
 
 		if key == "redis" {
