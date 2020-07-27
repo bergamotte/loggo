@@ -34,19 +34,16 @@ func CreateIndex(es elasticsearch.Client) {
   _, err := es.Indices.Create(
 		"logs",
 		es.Indices.Create.WithBody(strings.NewReader(`{
-		  "settings": {
-		    "number_of_shards": 1
-		  },
-		  "mappings": {
+      "mappings": {
         "_doc": {
           "properties": {
-  		      "log": { "type": "text" },
+            "log": { "type": "text" },
             "message": { "type": "text" },
             "hostname": { "type": "text" },
             "timestamp": { "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSS" }
-  		    }
+          }
         }
-		  }
+	    }
 		}`)),
 	)
 
